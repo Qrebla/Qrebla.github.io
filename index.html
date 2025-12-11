@@ -1,53 +1,1521 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html lang="zh-CN">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="viewport" content="initial-scale=1, maximum-scale=3, minimum-scale=1, user-scalable=no">
-<title>Albert's First Site</title>
-<style type="text/css">
-body,td,th {
-	font-family: "微软雅黑", "Segoe UI", "DejaVu Sans", "Trebuchet MS", sans-serif, ;
-}
-a:link {
-	text-decoration: none;
-}
-a:visited {
-	text-decoration: none;
-	color: #FFFFFF;
-}
-a:hover {
-	text-decoration: none;
-}
-a:active {
-	text-decoration: none;
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>金属腐蚀与防护 - 北二外仿真化学实验室</title>
+    <style>
+        /* 所有样式保持不变，只修改了下面电源正负极标签的名称 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #1a2a3a 0%, #2c3e50 100%);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .header {
+            background: linear-gradient(135deg, #3498db 0%, #2c3e50 100%);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .header h1 {
+            font-size: 2.2em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        .lab-container {
+            display: grid;
+            grid-template-columns: 3fr 1fr;
+            gap: 20px;
+            padding: 20px;
+            height: 75vh;
+        }
+        .experiment-area {
+            background: rgba(30, 40, 50, 0.7);
+            border-radius: 10px;
+            padding: 15px;
+            border: 1px solid rgba(255,255,255,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        .lab-bench {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, #3a2c1f, #5d4b32);
+            border-radius: 8px;
+            position: relative;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+        }
+        .controls-area {
+            background: rgba(30, 40, 50, 0.7);
+            border-radius: 10px;
+            padding: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            overflow-y: auto;
+        }
+        .instruments-panel {
+            background: rgba(40, 50, 60, 0.8);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .instruments-panel h3 {
+            color: #3498db;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .instruments-grid {
+            display: grid;
+            grid-template-columns: repeat(1, 1fr);
+            gap: 10px;
+        }
+        .instrument {
+            background: rgba(50, 60, 70, 0.8);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 5px;
+            padding: 10px;
+            text-align: center;
+            cursor: grab;
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+        .instrument:hover {
+            background: rgba(60, 80, 100, 0.8);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .instrument:active {
+            cursor: grabbing;
+        }
+        .instrument-icon {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        .control-group {
+            margin-bottom: 25px;
+        }
+        .control-group h3 {
+            color: #3498db;
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+        .connection-mode {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .connection-btn {
+            padding: 10px;
+            border: 2px solid #3498db;
+            background: rgba(52, 152, 219, 0.2);
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            text-align: center;
+            font-size: 12px;
+        }
+        .connection-btn.active {
+            background: #3498db;
+            color: white;
+        }
+        .connection-btn:hover {
+            background: #2980b9;
+            color: white;
+        }
+        .chemical-buttons {
+            display: grid;
+            grid-template-columns: repeat(1, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .chemical-btn {
+            padding: 10px;
+            border: 2px solid #9b59b6;
+            background: rgba(155, 89, 182, 0.2);
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+        .chemical-btn.active {
+            background: #9b59b6;
+            color: white;
+        }
+        .chemical-btn:hover {
+            background: #8e44ad;
+            color: white;
+        }
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .action-btn {
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .start-btn {
+            background: #27ae60;
+            color: white;
+        }
+        .start-btn:hover {
+            background: #219a52;
+        }
+        .reset-btn {
+            background: #e74c3c;
+            color: white;
+        }
+        .reset-btn:hover {
+            background: #c0392b;
+        }
+        .status-panel {
+            background: rgba(40, 50, 60, 0.8);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            padding: 5px;
+            background: rgba(30, 40, 50, 0.5);
+            border-radius: 4px;
+        }
+        .status-label {
+            font-weight: bold;
+            color: #bdc3c7;
+        }
+        .status-value {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        /* 实验对象样式 */
+        .experiment-object {
+            position: absolute;
+            cursor: move;
+            user-select: none;
+            transition: transform 0.2s ease;
+            z-index: 10;
+        }
+        .experiment-object:hover {
+            transform: scale(1.05);
+        }
+        .water-trough {
+            width: 200px;
+            height: 150px;
+            background: rgba(173, 216, 230, 0.1);
+            border: 3px solid rgba(52, 152, 219, 0.8);
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+        .water-trough-liquid {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background: rgba(52, 152, 219, 0.4);
+            transition: height 0.5s ease;
+        }
+        .power-supply {
+            width: 100px;
+            height: 80px;
+            background: #2c3e50;
+            border-radius: 8px;
+            border: 3px solid #3498db;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .power-supply-label {
+            position: absolute;
+            top: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 10px;
+            font-weight: bold;
+            color: #fff;
+            background: rgba(0,0,0,0.6);
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+        .power-terminals {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            margin-top: 25px;
+            position: relative;
+        }
+        .power-terminal {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .positive-terminal {
+            width: 15px;
+            height: 15px;
+            background: #e74c3c; /* 红色端子 */
+            border-radius: 50%;
+            border: 2px solid #c0392b;
+        }
+        .negative-terminal {
+            width: 15px;
+            height: 15px;
+            background: #3498db; /* 蓝色端子 */
+            border-radius: 50%;
+            border: 2px solid #2980b9;
+        }
+        .terminal-label {
+            font-size: 9px;
+            margin-top: 3px;
+            color: #fff;
+            background: rgba(0,0,0,0.5);
+            padding: 1px 3px;
+            border-radius: 2px;
+            white-space: nowrap;
+        }
+        .wire {
+            width: 120px;
+            height: 4px;
+            background: linear-gradient(to right, #7f8c8d, #95a5a6, #7f8c8d);
+            border-radius: 2px;
+            position: relative;
+            cursor: pointer;
+        }
+        .wire-rotation {
+            position: absolute;
+            top: -15px;
+            right: 5px;
+            width: 20px;
+            height: 20px;
+            background: rgba(52, 152, 219, 0.7);
+            border-radius: 50%;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            cursor: pointer;
+            z-index: 100;
+        }
+        .wire::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background: linear-gradient(to right, #95a5a6, #bdc3c7, #95a5a6);
+            border-radius: 4px;
+        }
+        .metal-electrode {
+            width: 20px;
+            height: 100px;
+            border-radius: 3px;
+            position: relative;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+        }
+        .iron-electrode {
+            background: linear-gradient(to bottom, #bdc3c7, #95a5a6);
+        }
+        .zinc-electrode {
+            background: linear-gradient(to bottom, #a8a8a8, #7d7d7d);
+        }
+        .reagent-bottle {
+            width: 50px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 5px 5px 20px 20px;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+        .reagent-liquid {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            border-radius: 0 0 18px 18px;
+        }
+        .potassium-ferricyanide {
+            background: rgba(255, 215, 0, 0.8);
+        }
+        .object-label {
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            color: white;
+            background: rgba(0,0,0,0.7);
+            padding: 3px 8px;
+            border-radius: 3px;
+            white-space: nowrap;
+            z-index: 20;
+        }
+        /* 实验现象样式 */
+        .corrosion-spot {
+            position: absolute;
+            background: #8B4513;
+            border-radius: 50%;
+            opacity: 0.9;
+            z-index: 5;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        .bubbles-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+        }
+        .bubble {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            animation: bubble-rise linear infinite;
+        }
+        @keyframes bubble-rise {
+            0% {
+                transform: translateY(0) scale(0.5);
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(-120px) scale(1);
+                opacity: 0;
+            }
+        }
+        .reaction-indicator {
+            position: absolute;
+            font-size: 16px;
+            opacity: 0;
+            animation: fade-up 2s ease-out;
+            z-index: 8;
+            font-weight: bold;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+        }
+        @keyframes fade-up {
+            0% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-60px);
+                opacity: 0;
+            }
+        }
+        .chemical-effect {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.8;
+            z-index: 3;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.1); opacity: 0.9; }
+        }
+        .ferricyanide-blue {
+            background: rgba(30, 144, 255, 0.8); /* 深蓝色 */
+            box-shadow: 0 0 25px rgba(30, 144, 255, 0.9);
+        }
+        .ferricyanide-yellow {
+            background: rgba(255, 215, 0, 0.8); /* 深黄色 */
+            box-shadow: 0 0 25px rgba(255, 215, 0, 0.9);
+        }
+        .connection-line {
+            position: absolute;
+            background: linear-gradient(to right, #e74c3c, #3498db);
+            height: 3px;
+            transform-origin: 0 0;
+            z-index: 1;
+            border-radius: 2px;
+            pointer-events: none;
+        }
+        .experiment-log {
+            background: rgba(30, 40, 50, 0.8);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            max-height: 150px;
+            overflow-y: auto;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .log-entry {
+            padding: 5px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            font-size: 12px;
+        }
+        .log-time {
+            color: #3498db;
+            margin-right: 10px;
+        }
+        .wire-clamp {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: #e74c3c;
+            border-radius: 50%;
+            border: 2px solid #c0392b;
+            z-index: 25;
+            pointer-events: none;
+        }
+        .positive-clamp {
+            background: #e74c3c; /* 红色为正极夹具 */
+            border-color: #c0392b;
+        }
+        .negative-clamp {
+            background: #3498db; /* 蓝色为负极夹具 */
+            border-color: #2980b9;
+        }
+        .instruction-panel {
+            background: rgba(40, 50, 60, 0.8);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .instruction-panel h3 {
+            color: #3498db;
+            margin-bottom: 10px;
+        }
+        .instruction-text {
+            font-size: 12px;
+            line-height: 1.5;
+            color: #bdc3c7;
+        }
+        .polarity-indicator {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 10px;
+            font-weight: bold;
+            background: rgba(0,0,0,0.7);
+            padding: 2px 6px;
+            border-radius: 3px;
+            z-index: 30;
+            white-space: nowrap;
+        }
+        .anode-indicator {
+            color: #e74c3c;
+            border: 1px solid #e74c3c;
+        }
+        .cathode-indicator {
+            color: #3498db;
+            border: 1px solid #3498db;
+        }
+        .mode-description {
+            font-size: 11px;
+            color: #bdc3c7;
+            margin-top: 5px;
+            text-align: center;
+            line-height: 1.3;
+        }
+        .bisuu-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(52, 152, 219, 0.9);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            z-index: 100;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+    </style>
 </head>
-<body bgcolor="#5151A2" text="#FFFFFF" link="#FFFFFF">
-		<!--header begins-->
-        <h1 style="text-align: left"><a href="/index.html">Albert's Personal Website</a></h1>
-		      <p align="right">
-		          <a href="https://github.com/Qrebla">Github</a>&nbsp;&nbsp;|&nbsp;&nbsp;
-		          <a href="https://www.luogu.com.cn/user/688133">Luogu</a>&nbsp;&nbsp;|&nbsp;&nbsp;
-		          <a href="https://vjudge.net/user/Qrebla">VJudge</a>&nbsp;&nbsp;|&nbsp;&nbsp;
-        		  <a href="https://codeforces.com/profile/Qrebla">Codeforces</a>&nbsp;&nbsp;|&nbsp;&nbsp;
-			  <a href="https://atcoder.jp/users/Qrebla">AtCoder</a>&nbsp;&nbsp;|&nbsp;&nbsp;
-		          <a href="http://oj.zszc-xsm.com/user/profile/zouxiangweilaiAlbert"><abbr title="Legacy">XSMOJ</abbr></a>&nbsp;&nbsp;|&nbsp;&nbsp;
-		          <a href="https://space.bilibili.com/1889947472"><abbr title="Some LEGO stop motion">Bilibili</abbr></a>
-		      </p>
-		  <hr />
-	<!--header ends-->
-	
-	<!--intro begins-->
-	<div>
-    	<p>Hi, I'm <strong>Albert</strong>, an ordinary student interested in coding (and lots of other things). I'm recently learning C++, the programming language for OI and stuff like that. But I'm still a noob in working out complexed problems and can easily get stuck by a new situation I've never dealt with (<dfn title="Dynamic Programming">DP</dfn>, in particular). </p>
-        <hr />
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>金属腐蚀与防护——北二外仿真化学实验室</h1>
+            <p>铁-锌原电池腐蚀实验 | 外加电流法阴极保护 | 铁氰化钾检测</p>
+        </div>
+        
+        <div class="lab-container">
+            <div class="experiment-area">
+                <div class="lab-bench" id="labBench">
+                    <!-- 实验对象将通过JS动态添加 -->
+                </div>
+            </div>
+            
+            <div class="controls-area">
+                <div class="instruments-panel">
+                    <h3>实验仪器与材料</h3>
+                    <div class="instruments-grid">
+                        <div class="instrument" data-type="reagent-bottle" data-content="铁氰化钾" data-chemical="potassium-ferricyanide">
+                            <div class="instrument-icon">🧪</div>
+                            <div>铁氰化钾</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="control-group">
+                    <h3>电极连接模式</h3>
+                    <div class="connection-mode">
+                        <button class="connection-btn" id="mode1Btn">
+                            模式1: 铁(阳极)<br>锌(阴极)
+                            <div class="mode-description">铁连接正极，锌连接负极</div>
+                        </button>
+                        <button class="connection-btn" id="mode2Btn">
+                            模式2: 锌(阳极)<br>铁(阴极)
+                            <div class="mode-description">锌连接正极，铁连接负极</div>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="control-group">
+                    <h3>化学试剂检测</h3>
+                    <div class="chemical-buttons">
+                        <button class="chemical-btn" id="addFerricyanideBtn">滴加铁氰化钾</button>
+                    </div>
+                    <div style="font-size: 11px; color: #bdc3c7; margin-top: 8px; text-align: center;">
+                        铁氰化钾检测Fe²⁺：蓝色=有Fe²⁺，黄色=无Fe²⁺<br>
+                        <span style="color: #ffd700;">再次点击可清除试剂</span>
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="action-btn start-btn" id="startBtn">开始实验</button>
+                    <button class="action-btn reset-btn" id="resetBtn">重置实验</button>
+                </div>
+                
+                <div class="status-panel">
+                    <h3>实验状态</h3>
+                    <div class="status-item">
+                        <span class="status-label">腐蚀电位:</span>
+                        <span class="status-value" id="corrosionPotential">0.0 V</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">电流方向:</span>
+                        <span class="status-value" id="currentDirection">无电流</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">实验时间:</span>
+                        <span class="status-value" id="experimentTime">0秒</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">铁电极状态:</span>
+                        <span class="status-value" id="ironStatus">未连接</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">锌电极状态:</span>
+                        <span class="status-value" id="zincStatus">未连接</span>
+                    </div>
+                </div>
+                
+                <div class="instruction-panel">
+                    <h3>实验原理</h3>
+                    <div class="instruction-text">
+                        <p><strong>电化学腐蚀与外加电流法阴极保护原理：</strong></p>
+                        <p>1. <strong>阳极</strong>：与电源<strong>正极</strong>相连，发生氧化反应，被腐蚀</p>
+                        <p>2. <strong>阴极</strong>：与电源<strong>负极</strong>相连，发生还原反应，被保护</p>
+                        <p>3. <strong>铁氰化钾检测原理</strong>：</p>
+                        <p>   - 铁连接正极（阳极）→ 生成Fe²⁺ → 蓝色沉淀</p>
+                        <p>   - 铁连接负极（阴极）→ 无Fe²⁺ → 黄色（试剂本色）</p>
+                        <p>4. <strong>外加电流法</strong>：被保护金属必须连接电源<strong>负极</strong></p>
+                        <p>5. <strong>模式对比</strong>：</p>
+                        <p>   - 模式1：铁被腐蚀（阳极），锌被保护（阴极）</p>
+                        <p>   - 模式2：锌被腐蚀（阳极），铁被保护（阴极）</p>
+                    </div>
+                </div>
+                
+                <div class="experiment-log">
+                    <h3>实验日志</h3>
+                    <div id="logContainer"></div>
+                </div>
+            </div>
+        </div>
     </div>
-	<!--intro ends-->
-	<!--footer begins-->
-	<div>
-    	<p style="text-align: center">Powered by <strong>LQStudios</strong></p>
-    </div>
-	<!--footer ends-->
+
+    <script>
+        class ChemistryLabSimulation {
+            constructor() {
+                this.labBench = document.getElementById('labBench');
+                this.isExperimentRunning = false;
+                this.experimentTime = 0;
+                this.experimentObjects = [];
+                this.connections = [];
+                this.corrosionSpots = [];
+                this.bubbles = [];
+                this.chemicalEffects = [];
+                this.logEntries = [];
+                this.dragging = null;
+                this.connectionLines = [];
+                this.wireClamps = [];
+                this.activeReagents = new Set();
+                this.rotationAngle = 0;
+                this.ferricyanideActive = false;
+                
+                this.connectionMode = 1;
+                
+                this.init();
+            }
+            
+            init() {
+                this.setupEventListeners();
+                this.createDefaultSetup();
+                this.updateConnectionMode();
+                this.addLogEntry("北二外仿真化学实验室已初始化");
+                this.addLogEntry("请选择电极连接模式");
+            }
+            
+            createDefaultSetup() {
+                this.createExperimentObject('water-trough', '大水槽', 200, 150);
+                this.createExperimentObject('power-supply', '直流电源', 50, 200);
+                
+                const wire1 = this.createExperimentObject('wire', '导线', 150, 50);
+                const wire2 = this.createExperimentObject('wire', '导线', 150, 100);
+                
+                this.addWireRotationButton(wire1);
+                this.addWireRotationButton(wire2);
+                
+                this.createExperimentObject('metal-electrode', '锌片', 'zinc', 300, 180);
+                this.createExperimentObject('metal-electrode', '铁片', 'iron', 400, 180);
+            }
+            
+            addWireRotationButton(wireObj) {
+                const rotationBtn = document.createElement('div');
+                rotationBtn.className = 'wire-rotation';
+                rotationBtn.innerHTML = '↻';
+                rotationBtn.title = '点击旋转导线';
+                
+                rotationBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    this.rotateWire(wireObj);
+                });
+                
+                wireObj.appendChild(rotationBtn);
+            }
+            
+            rotateWire(wireObj) {
+                const currentAngle = wireObj.dataset.angle ? parseInt(wireObj.dataset.angle) : 0;
+                const newAngle = (currentAngle + 45) % 360;
+                wireObj.dataset.angle = newAngle;
+                
+                wireObj.style.transform = `rotate(${newAngle}deg)`;
+                this.addLogEntry(`导线旋转至${newAngle}度`);
+                this.checkCircuitConnections();
+            }
+            
+            setupEventListeners() {
+                document.querySelectorAll('.instrument').forEach(instrument => {
+                    instrument.addEventListener('mousedown', (e) => this.startDrag(e, instrument));
+                    instrument.addEventListener('touchstart', (e) => this.startDrag(e, instrument));
+                });
+                
+                document.getElementById('mode1Btn').addEventListener('click', () => {
+                    this.connectionMode = 1;
+                    this.updateConnectionMode();
+                    this.checkCircuitConnections();
+                });
+                
+                document.getElementById('mode2Btn').addEventListener('click', () => {
+                    this.connectionMode = 2;
+                    this.updateConnectionMode();
+                    this.checkCircuitConnections();
+                });
+                
+                document.getElementById('addFerricyanideBtn').addEventListener('click', () => {
+                    if (this.ferricyanideActive) {
+                        this.clearChemicalReagents();
+                    } else {
+                        this.addChemicalReagent('potassium-ferricyanide');
+                    }
+                });
+                
+                document.getElementById('startBtn').addEventListener('click', () => {
+                    this.toggleExperiment();
+                });
+                
+                document.getElementById('resetBtn').addEventListener('click', () => {
+                    this.resetExperiment();
+                });
+                
+                document.addEventListener('mousemove', (e) => this.drag(e));
+                document.addEventListener('touchmove', (e) => this.drag(e));
+                document.addEventListener('mouseup', () => this.stopDrag());
+                document.addEventListener('touchend', () => this.stopDrag());
+            }
+            
+            startDrag(e, instrument) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const type = instrument.dataset.type;
+                const content = instrument.dataset.content;
+                const chemical = instrument.dataset.chemical;
+                
+                let clientX, clientY;
+                if (e.type.includes('touch')) {
+                    clientX = e.touches[0].clientX;
+                    clientY = e.touches[0].clientY;
+                } else {
+                    clientX = e.clientX;
+                    clientY = e.clientY;
+                }
+                
+                const obj = this.createExperimentObject(type, content, chemical, clientX, clientY);
+                
+                this.dragging = {
+                    element: obj,
+                    type: type,
+                    content: content,
+                    offsetX: e.offsetX || 0,
+                    offsetY: e.offsetY || 0
+                };
+                
+                this.updateObjectPosition(obj, clientX, clientY);
+            }
+            
+            createExperimentObject(type, content, subtype, x, y) {
+                const obj = document.createElement('div');
+                obj.className = 'experiment-object';
+                obj.dataset.type = type;
+                obj.dataset.content = content;
+                if (subtype) obj.dataset.subtype = subtype;
+                
+                const benchRect = this.labBench.getBoundingClientRect();
+                const posX = x - benchRect.left - 50;
+                const posY = y - benchRect.top - 50;
+                
+                obj.style.left = Math.max(10, Math.min(posX, benchRect.width - 100)) + 'px';
+                obj.style.top = Math.max(10, Math.min(posY, benchRect.height - 100)) + 'px';
+                
+                switch(type) {
+                    case 'water-trough':
+                        obj.innerHTML = `
+                            <div class="water-trough">
+                                <div class="water-trough-liquid" style="height: 70%"></div>
+                            </div>
+                            <div class="object-label">${content}</div>
+                        `;
+                        obj.style.width = '200px';
+                        obj.style.height = '150px';
+                        break;
+                        
+                    case 'power-supply':
+                        // 电源正负极标签已交换：红色端子标为正极(+)，蓝色端子标为负极(-)
+                        obj.innerHTML = `
+                            <div class="power-supply">
+                                <div class="power-supply-label">直流电源</div>
+                                <div class="power-terminals">
+                                    <div class="power-terminal">
+                                        <div class="positive-terminal"></div>
+                                        <div class="terminal-label">正极(+)</div>
+                                    </div>
+                                    <div class="power-terminal">
+                                        <div class="negative-terminal"></div>
+                                        <div class="terminal-label">负极(-)</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="object-label">${content}</div>
+                        `;
+                        obj.style.width = '100px';
+                        obj.style.height = '80px';
+                        break;
+                        
+                    case 'wire':
+                        obj.innerHTML = `
+                            <div class="wire"></div>
+                            <div class="object-label">${content}</div>
+                        `;
+                        obj.style.width = '120px';
+                        obj.style.height = '4px';
+                        break;
+                        
+                    case 'metal-electrode':
+                        const electrodeClass = subtype === 'zinc' ? 'zinc-electrode' : 'iron-electrode';
+                        const electrodeLabel = subtype === 'zinc' ? '锌电极(Zn)' : '铁电极(Fe)';
+                        obj.innerHTML = `
+                            <div class="metal-electrode ${electrodeClass}"></div>
+                            <div class="object-label">${electrodeLabel}</div>
+                        `;
+                        obj.style.width = '20px';
+                        obj.style.height = '100px';
+                        break;
+                        
+                    case 'reagent-bottle':
+                        const reagentClass = subtype === 'potassium-ferricyanide' ? 'potassium-ferricyanide' : '';
+                        const reagentLabel = subtype === 'potassium-ferricyanide' ? '铁氰化钾K₃[Fe(CN)₆]' : '';
+                        obj.innerHTML = `
+                            <div class="reagent-bottle">
+                                <div class="reagent-liquid ${reagentClass}" style="height: 80%"></div>
+                            </div>
+                            <div class="object-label">${reagentLabel}</div>
+                        `;
+                        obj.style.width = '50px';
+                        obj.style.height = '80px';
+                        break;
+                }
+                
+                obj.addEventListener('mousedown', (e) => this.startObjectDrag(e, obj));
+                obj.addEventListener('touchstart', (e) => this.startObjectDrag(e, obj));
+                
+                this.labBench.appendChild(obj);
+                this.experimentObjects.push(obj);
+                
+                this.addLogEntry(`已添加: ${content}`);
+                
+                return obj;
+            }
+            
+            startObjectDrag(e, obj) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                let clientX, clientY;
+                if (e.type.includes('touch')) {
+                    clientX = e.touches[0].clientX;
+                    clientY = e.touches[0].clientY;
+                } else {
+                    clientX = e.clientX;
+                    clientY = e.clientY;
+                }
+                
+                const rect = obj.getBoundingClientRect();
+                
+                this.dragging = {
+                    element: obj,
+                    type: obj.dataset.type,
+                    content: obj.dataset.content,
+                    offsetX: clientX - rect.left,
+                    offsetY: clientY - rect.top
+                };
+            }
+            
+            drag(e) {
+                if (!this.dragging || !this.dragging.element) return;
+                
+                e.preventDefault();
+                
+                let clientX, clientY;
+                if (e.type.includes('touch')) {
+                    clientX = e.touches[0].clientX;
+                    clientY = e.touches[0].clientY;
+                } else {
+                    clientX = e.clientX;
+                    clientY = e.clientY;
+                }
+                
+                this.updateObjectPosition(this.dragging.element, clientX, clientY);
+                this.checkCircuitConnections();
+            }
+            
+            updateObjectPosition(obj, clientX, clientY) {
+                const benchRect = this.labBench.getBoundingClientRect();
+                
+                let x = clientX - benchRect.left - this.dragging.offsetX;
+                let y = clientY - benchRect.top - this.dragging.offsetY;
+                
+                const objRect = obj.getBoundingClientRect();
+                x = Math.max(10, Math.min(x, benchRect.width - objRect.width - 10));
+                y = Math.max(10, Math.min(y, benchRect.height - objRect.height - 10));
+                
+                obj.style.left = x + 'px';
+                obj.style.top = y + 'px';
+            }
+            
+            stopDrag() {
+                if (this.dragging && this.dragging.element) {
+                    this.addLogEntry(`移动了: ${this.dragging.content}`);
+                }
+                this.dragging = null;
+            }
+            
+            updateConnectionMode() {
+                const mode1Btn = document.getElementById('mode1Btn');
+                const mode2Btn = document.getElementById('mode2Btn');
+                
+                mode1Btn.classList.toggle('active', this.connectionMode === 1);
+                mode2Btn.classList.toggle('active', this.connectionMode === 2);
+                
+                const modeText = this.connectionMode === 1 ? 
+                    "铁连接正极(阳极)，锌连接负极(阴极)" : "锌连接正极(阳极)，铁连接负极(阴极)";
+                this.addLogEntry(`连接模式切换为: ${modeText}`);
+                
+                this.updateElectrodePolarity();
+            }
+            
+            updateElectrodePolarity() {
+                document.querySelectorAll('.polarity-indicator').forEach(indicator => {
+                    indicator.parentNode.removeChild(indicator);
+                });
+                
+                const zincElectrode = this.experimentObjects.find(obj => 
+                    obj.dataset.type === 'metal-electrode' && obj.dataset.subtype === 'zinc');
+                const ironElectrode = this.experimentObjects.find(obj => 
+                    obj.dataset.type === 'metal-electrode' && obj.dataset.subtype === 'iron');
+                
+                if (zincElectrode) {
+                    const isAnode = this.connectionMode === 2;
+                    this.addPolarityIndicator(zincElectrode, isAnode);
+                }
+                
+                if (ironElectrode) {
+                    const isAnode = this.connectionMode === 1;
+                    this.addPolarityIndicator(ironElectrode, isAnode);
+                }
+            }
+            
+            addPolarityIndicator(electrode, isAnode) {
+                const indicator = document.createElement('div');
+                indicator.className = `polarity-indicator ${isAnode ? 'anode-indicator' : 'cathode-indicator'}`;
+                indicator.textContent = isAnode ? '阳极' : '阴极';
+                
+                electrode.appendChild(indicator);
+            }
+            
+            checkCircuitConnections() {
+                this.clearConnections();
+                
+                const zincElectrode = this.experimentObjects.find(obj => 
+                    obj.dataset.type === 'metal-electrode' && obj.dataset.subtype === 'zinc');
+                const ironElectrode = this.experimentObjects.find(obj => 
+                    obj.dataset.type === 'metal-electrode' && obj.dataset.subtype === 'iron');
+                const powerSupply = this.experimentObjects.find(obj => 
+                    obj.dataset.type === 'power-supply');
+                const wires = this.experimentObjects.filter(obj => 
+                    obj.dataset.type === 'wire');
+                
+                this.updateElectrodePolarity();
+                
+                if (zincElectrode && ironElectrode && powerSupply && wires.length >= 2) {
+                    if (this.connectionMode === 1) {
+                        // 模式1：铁阳极（连接红色端子），锌阴极（连接蓝色端子）
+                        this.createConnection(ironElectrode, powerSupply, 'positive');
+                        this.createConnection(zincElectrode, powerSupply, 'negative');
+                        
+                        document.getElementById('ironStatus').textContent = '阳极（被腐蚀）';
+                        document.getElementById('zincStatus').textContent = '阴极（被保护）';
+                        document.getElementById('currentDirection').textContent = 'Fe(阳)→Zn(阴)';
+                    } else {
+                        // 模式2：锌阳极（连接红色端子），铁阴极（连接蓝色端子）
+                        this.createConnection(zincElectrode, powerSupply, 'positive');
+                        this.createConnection(ironElectrode, powerSupply, 'negative');
+                        
+                        document.getElementById('zincStatus').textContent = '阳极（被腐蚀）';
+                        document.getElementById('ironStatus').textContent = '阴极（被保护）';
+                        document.getElementById('currentDirection').textContent = 'Zn(阳)→Fe(阴)';
+                    }
+                    
+                    this.createWireClamps();
+                    
+                    this.addLogEntry(`电路连接完成: ${this.connectionMode === 1 ? '铁(阳极) 锌(阴极)' : '锌(阳极) 铁(阴极)'}`);
+                    
+                    if (!this.isExperimentRunning) {
+                        this.addLogEntry("点击'开始实验'观察现象");
+                    }
+                } else {
+                    document.getElementById('zincStatus').textContent = '未连接';
+                    document.getElementById('ironStatus').textContent = '未连接';
+                    document.getElementById('currentDirection').textContent = '无电流';
+                }
+            }
+            
+            createConnection(fromObj, toObj, polarity) {
+                const fromRect = fromObj.getBoundingClientRect();
+                const toRect = toObj.getBoundingClientRect();
+                const benchRect = this.labBench.getBoundingClientRect();
+                
+                let fromX, fromY, toX, toY;
+                
+                if (fromObj.dataset.type === 'metal-electrode') {
+                    fromX = fromRect.left - benchRect.left + fromRect.width / 2;
+                    fromY = fromRect.top - benchRect.top + fromRect.height * 0.8;
+                } else if (fromObj.dataset.type === 'power-supply') {
+                    // 红色端子（左侧25px）为正极，蓝色端子（右侧75px）为负极
+                    fromX = fromRect.left - benchRect.left + (polarity === 'positive' ? 25 : 75);
+                    fromY = fromRect.top - benchRect.top + fromRect.height * 0.8;
+                }
+                
+                if (toObj.dataset.type === 'metal-electrode') {
+                    toX = toRect.left - benchRect.left + toRect.width / 2;
+                    toY = toRect.top - benchRect.top + toRect.height * 0.8;
+                } else if (toObj.dataset.type === 'power-supply') {
+                    toX = toRect.left - benchRect.left + (polarity === 'positive' ? 25 : 75);
+                    toY = toRect.top - benchRect.top + toRect.height * 0.8;
+                }
+                
+                const length = Math.sqrt(Math.pow(toX - fromX, 2) + Math.pow(toY - fromY, 2));
+                const angle = Math.atan2(toY - fromY, toX - fromX) * 180 / Math.PI;
+                
+                const line = document.createElement('div');
+                line.className = 'connection-line';
+                line.style.width = length + 'px';
+                line.style.left = fromX + 'px';
+                line.style.top = fromY + 'px';
+                line.style.transform = `rotate(${angle}deg)`;
+                // 红色端子（正极）为红色，蓝色端子（负极）为蓝色
+                line.style.background = polarity === 'positive' ? 
+                    'linear-gradient(to right, #e74c3c, #c0392b)' : // 正极：红色
+                    'linear-gradient(to right, #3498db, #2980b9)'; // 负极：蓝色
+                
+                this.labBench.appendChild(line);
+                this.connectionLines.push(line);
+            }
+            
+            createWireClamps() {
+                const electrodes = this.experimentObjects.filter(obj => 
+                    obj.dataset.type === 'metal-electrode');
+                const powerSupply = this.experimentObjects.find(obj => 
+                    obj.dataset.type === 'power-supply');
+                
+                if (electrodes.length >= 2 && powerSupply) {
+                    electrodes.forEach((electrode, index) => {
+                        const rect = electrode.getBoundingClientRect();
+                        const benchRect = this.labBench.getBoundingClientRect();
+                        
+                        const clamp = document.createElement('div');
+                        
+                        // 根据连接模式确定极性：红色为正极夹具，蓝色为负极夹具
+                        if (this.connectionMode === 1) {
+                            // 模式1：铁连接红色端子（正极），锌连接蓝色端子（负极）
+                            clamp.className = `wire-clamp ${electrode.dataset.subtype === 'iron' ? 'positive-clamp' : 'negative-clamp'}`;
+                        } else {
+                            // 模式2：锌连接红色端子（正极），铁连接蓝色端子（负极）
+                            clamp.className = `wire-clamp ${electrode.dataset.subtype === 'zinc' ? 'positive-clamp' : 'negative-clamp'}`;
+                        }
+                        
+                        clamp.style.left = (rect.left - benchRect.left + rect.width / 2 - 6) + 'px';
+                        clamp.style.top = (rect.top - benchRect.top + rect.height * 0.8 - 6) + 'px';
+                        
+                        this.labBench.appendChild(clamp);
+                        this.wireClamps.push(clamp);
+                    });
+                    
+                    // 电源夹具：红色为正极夹具，蓝色为负极夹具
+                    const powerRect = powerSupply.getBoundingClientRect();
+                    const powerBenchRect = this.labBench.getBoundingClientRect();
+                    
+                    // 正极夹具（红色，在25px位置）
+                    const positiveClamp = document.createElement('div');
+                    positiveClamp.className = 'wire-clamp positive-clamp';
+                    positiveClamp.style.left = (powerRect.left - powerBenchRect.left + 23) + 'px';
+                    positiveClamp.style.top = (powerRect.top - powerBenchRect.top + 56) + 'px';
+                    
+                    // 负极夹具（蓝色，在75px位置）
+                    const negativeClamp = document.createElement('div');
+                    negativeClamp.className = 'wire-clamp negative-clamp';
+                    negativeClamp.style.left = (powerRect.left - powerBenchRect.left + 73) + 'px';
+                    negativeClamp.style.top = (powerRect.top - powerBenchRect.top + 56) + 'px';
+                    
+                    this.labBench.appendChild(positiveClamp);
+                    this.labBench.appendChild(negativeClamp);
+                    this.wireClamps.push(positiveClamp, negativeClamp);
+                }
+            }
+            
+            clearConnections() {
+                this.connectionLines.forEach(line => {
+                    if (line.parentNode) line.parentNode.removeChild(line);
+                });
+                this.wireClamps.forEach(clamp => {
+                    if (clamp.parentNode) clamp.parentNode.removeChild(clamp);
+                });
+                this.connectionLines = [];
+                this.wireClamps = [];
+            }
+            
+            startExperiment() {
+                if (this.isExperimentRunning) return;
+                
+                this.isExperimentRunning = true;
+                this.addLogEntry("铁-锌原电池腐蚀实验开始");
+                this.addLogEntry(this.connectionMode === 1 ? 
+                    "铁连接正极(阳极)被腐蚀，锌连接负极(阴极)被保护" : 
+                    "锌连接正极(阳极)被腐蚀，铁连接负极(阴极)被保护");
+                this.corrosionAnimation();
+            }
+            
+            corrosionAnimation() {
+                if (!this.isExperimentRunning) return;
+                
+                this.experimentTime++;
+                document.getElementById('experimentTime').textContent = this.experimentTime + '秒';
+                
+                const corrosionPotential = this.connectionMode === 1 ? 
+                    0.44 + (Math.random() * 0.1 - 0.05) : 
+                    -0.76 + (Math.random() * 0.1 - 0.05);
+                    
+                document.getElementById('corrosionPotential').textContent = 
+                    corrosionPotential.toFixed(2) + ' V';
+                
+                if (this.connectionMode === 1) {
+                    this.createIronCorrosion();
+                    this.createZincProtection();
+                } else {
+                    this.createZincCorrosion();
+                    this.createIronProtection();
+                }
+                
+                this.createHydrogenBubbles();
+                
+                this.showChemicalEffects();
+                
+                setTimeout(() => this.corrosionAnimation(), 1000);
+            }
+            
+            createZincCorrosion() {
+                const zincElectrode = this.experimentObjects.find(obj => 
+                    obj.dataset.subtype === 'zinc');
+                
+                if (zincElectrode && Math.random() < 0.4) {
+                    const rect = zincElectrode.getBoundingClientRect();
+                    const benchRect = this.labBench.getBoundingClientRect();
+                    
+                    const spot = document.createElement('div');
+                    spot.className = 'corrosion-spot';
+                    spot.style.width = Math.random() * 8 + 4 + 'px';
+                    spot.style.height = spot.style.width;
+                    spot.style.left = (rect.left - benchRect.left + Math.random() * 15) + 'px';
+                    spot.style.top = (rect.top - benchRect.top + Math.random() * 80) + 'px';
+                    
+                    this.labBench.appendChild(spot);
+                    this.corrosionSpots.push(spot);
+                    
+                    const ion = document.createElement('div');
+                    ion.className = 'reaction-indicator';
+                    ion.textContent = 'Zn²⁺';
+                    ion.style.color = '#f39c12';
+                    ion.style.left = (rect.left - benchRect.left + 10) + 'px';
+                    ion.style.top = (rect.top - benchRect.top + 60) + 'px';
+                    
+                    this.labBench.appendChild(ion);
+                    
+                    setTimeout(() => {
+                        if (spot.parentNode) spot.parentNode.removeChild(spot);
+                        if (ion.parentNode) ion.parentNode.removeChild(ion);
+                    }, 3000);
+                }
+            }
+            
+            createIronCorrosion() {
+                const ironElectrode = this.experimentObjects.find(obj => 
+                    obj.dataset.subtype === 'iron');
+                
+                if (ironElectrode && Math.random() < 0.4) {
+                    const rect = ironElectrode.getBoundingClientRect();
+                    const benchRect = this.labBench.getBoundingClientRect();
+                    
+                    const spot = document.createElement('div');
+                    spot.className = 'corrosion-spot';
+                    spot.style.width = Math.random() * 8 + 4 + 'px';
+                    spot.style.height = spot.style.width;
+                    spot.style.left = (rect.left - benchRect.left + Math.random() * 15) + 'px';
+                    spot.style.top = (rect.top - benchRect.top + Math.random() * 80) + 'px';
+                    
+                    this.labBench.appendChild(spot);
+                    this.corrosionSpots.push(spot);
+                    
+                    const ion = document.createElement('div');
+                    ion.className = 'reaction-indicator';
+                    ion.textContent = 'Fe²⁺';
+                    ion.style.color = '#e74c3c';
+                    ion.style.left = (rect.left - benchRect.left + 10) + 'px';
+                    ion.style.top = (rect.top - benchRect.top + 60) + 'px';
+                    
+                    this.labBench.appendChild(ion);
+                    
+                    setTimeout(() => {
+                        if (spot.parentNode) spot.parentNode.removeChild(spot);
+                        if (ion.parentNode) ion.parentNode.removeChild(ion);
+                    }, 3000);
+                }
+            }
+            
+            createIronProtection() {
+                const ironElectrode = this.experimentObjects.find(obj => 
+                    obj.dataset.subtype === 'iron');
+                
+                if (ironElectrode && Math.random() < 0.2) {
+                    const rect = ironElectrode.getBoundingClientRect();
+                    const benchRect = this.labBench.getBoundingClientRect();
+                    
+                    const protection = document.createElement('div');
+                    protection.className = 'reaction-indicator';
+                    protection.textContent = '保护';
+                    protection.style.color = '#27ae60';
+                    protection.style.left = (rect.left - benchRect.left + 10) + 'px';
+                    protection.style.top = (rect.top - benchRect.top + 40) + 'px';
+                    
+                    this.labBench.appendChild(protection);
+                    
+                    setTimeout(() => {
+                        if (protection.parentNode) protection.parentNode.removeChild(protection);
+                    }, 2000);
+                }
+            }
+            
+            createZincProtection() {
+                const zincElectrode = this.experimentObjects.find(obj => 
+                    obj.dataset.subtype === 'zinc');
+                
+                if (zincElectrode && Math.random() < 0.2) {
+                    const rect = zincElectrode.getBoundingClientRect();
+                    const benchRect = this.labBench.getBoundingClientRect();
+                    
+                    const protection = document.createElement('div');
+                    protection.className = 'reaction-indicator';
+                    protection.textContent = '保护';
+                    protection.style.color = '#27ae60';
+                    protection.style.left = (rect.left - benchRect.left + 10) + 'px';
+                    protection.style.top = (rect.top - benchRect.top + 40) + 'px';
+                    
+                    this.labBench.appendChild(protection);
+                    
+                    setTimeout(() => {
+                        if (protection.parentNode) protection.parentNode.removeChild(protection);
+                    }, 2000);
+                }
+            }
+            
+            createHydrogenBubbles() {
+                const cathodeElectrode = this.connectionMode === 1 ? 
+                    this.experimentObjects.find(obj => obj.dataset.subtype === 'zinc') : 
+                    this.experimentObjects.find(obj => obj.dataset.subtype === 'iron');
+                
+                if (cathodeElectrode && Math.random() < 0.5) {
+                    const rect = cathodeElectrode.getBoundingClientRect();
+                    const benchRect = this.labBench.getBoundingClientRect();
+                    
+                    const bubble = document.createElement('div');
+                    bubble.className = 'bubble';
+                    bubble.style.width = Math.random() * 6 + 3 + 'px';
+                    bubble.style.height = bubble.style.width;
+                    bubble.style.left = (rect.left - benchRect.left + 8) + 'px';
+                    bubble.style.top = (rect.top - benchRect.top + 90) + 'px';
+                    bubble.style.animationDuration = (Math.random() * 1.5 + 1) + 's';
+                    
+                    this.labBench.appendChild(bubble);
+                    this.bubbles.push(bubble);
+                    
+                    if (Math.random() < 0.1) {
+                        const hydrogen = document.createElement('div');
+                        hydrogen.className = 'reaction-indicator';
+                        hydrogen.textContent = 'H₂';
+                        hydrogen.style.color = '#3498db';
+                        hydrogen.style.left = (rect.left - benchRect.left + 5) + 'px';
+                        hydrogen.style.top = (rect.top - benchRect.top + 70) + 'px';
+                        
+                        this.labBench.appendChild(hydrogen);
+                        
+                        setTimeout(() => {
+                            if (hydrogen.parentNode) hydrogen.parentNode.removeChild(hydrogen);
+                        }, 2000);
+                    }
+                    
+                    setTimeout(() => {
+                        if (bubble.parentNode) bubble.parentNode.removeChild(bubble);
+                    }, 2000);
+                }
+            }
+            
+            addChemicalReagent(reagentType) {
+                if (reagentType === 'potassium-ferricyanide') {
+                    this.activeReagents.add('potassium-ferricyanide');
+                    this.ferricyanideActive = true;
+                    
+                    const ironElectrode = this.experimentObjects.find(obj => 
+                        obj.dataset.subtype === 'iron');
+                    
+                    if (ironElectrode) {
+                        if (this.connectionMode === 1) {
+                            this.addLogEntry("铁连接正极（阳极），被腐蚀，生成Fe²⁺，铁氰化钾显蓝色");
+                        } else {
+                            this.addLogEntry("铁连接负极（阴极），被保护，无Fe²⁺生成，铁氰化钾显黄色");
+                        }
+                    }
+                    
+                    this.showFerricyanideEffect();
+                    
+                    document.getElementById('addFerricyanideBtn').textContent = '清除铁氰化钾';
+                }
+            }
+            
+            showFerricyanideEffect() {
+                const ironElectrode = this.experimentObjects.find(obj => 
+                    obj.dataset.subtype === 'iron');
+                
+                if (ironElectrode) {
+                    const rect = ironElectrode.getBoundingClientRect();
+                    const benchRect = this.labBench.getBoundingClientRect();
+                    
+                    let effectClass, indicatorText, indicatorColor;
+                    
+                    if (this.connectionMode === 1) {
+                        effectClass = 'ferricyanide-blue';
+                        indicatorText = 'Fe²⁺';
+                        indicatorColor = '#1e90ff';
+                    } else {
+                        effectClass = 'ferricyanide-yellow';
+                        indicatorText = '无Fe²⁺';
+                        indicatorColor = '#ffd700';
+                    }
+                    
+                    const effect = document.createElement('div');
+                    effect.className = `chemical-effect ${effectClass}`;
+                    effect.style.width = '35px';
+                    effect.style.height = '35px';
+                    effect.style.left = (rect.left - benchRect.left - 10) + 'px';
+                    effect.style.top = (rect.top - benchRect.top + 40) + 'px';
+                    
+                    this.labBench.appendChild(effect);
+                    this.chemicalEffects.push(effect);
+                    
+                    const indicator = document.createElement('div');
+                    indicator.className = 'reaction-indicator';
+                    indicator.textContent = indicatorText;
+                    indicator.style.color = indicatorColor;
+                    indicator.style.fontSize = '14px';
+                    indicator.style.left = (rect.left - benchRect.left - 5) + 'px';
+                    indicator.style.top = (rect.top - benchRect.top + 30) + 'px';
+                    
+                    this.labBench.appendChild(indicator);
+                    
+                    setTimeout(() => {
+                        if (effect.parentNode) effect.parentNode.removeChild(effect);
+                        if (indicator.parentNode) indicator.parentNode.removeChild(indicator);
+                        
+                        if (this.ferricyanideActive) {
+                            this.showFerricyanideEffect();
+                        }
+                    }, 3000);
+                }
+            }
+            
+            showChemicalEffects() {
+                if (this.activeReagents.has('potassium-ferricyanide') && Math.random() < 0.3) {
+                    this.showFerricyanideEffect();
+                }
+            }
+            
+            clearChemicalReagents() {
+                this.activeReagents.clear();
+                this.ferricyanideActive = false;
+                this.chemicalEffects.forEach(effect => {
+                    if (effect.parentNode) effect.parentNode.removeChild(effect);
+                });
+                this.chemicalEffects = [];
+                this.addLogEntry("已清除铁氰化钾试剂");
+                
+                document.getElementById('addFerricyanideBtn').textContent = '滴加铁氰化钾';
+            }
+            
+            toggleExperiment() {
+                this.isExperimentRunning = !this.isExperimentRunning;
+                const startBtn = document.getElementById('startBtn');
+                
+                if (this.isExperimentRunning) {
+                    startBtn.textContent = '暂停实验';
+                    this.corrosionAnimation();
+                    this.addLogEntry("实验进行中...");
+                } else {
+                    startBtn.textContent = '开始实验';
+                    this.addLogEntry("实验已暂停");
+                }
+            }
+            
+            resetExperiment() {
+                this.isExperimentRunning = false;
+                this.experimentTime = 0;
+                document.getElementById('startBtn').textContent = '开始实验';
+                
+                this.clearAllEffects();
+                
+                document.getElementById('corrosionPotential').textContent = '0.0 V';
+                document.getElementById('currentDirection').textContent = '无电流';
+                document.getElementById('experimentTime').textContent = '0秒';
+                document.getElementById('ironStatus').textContent = '未连接';
+                document.getElementById('zincStatus').textContent = '未连接';
+                
+                this.ferricyanideActive = false;
+                document.getElementById('addFerricyanideBtn').textContent = '滴加铁氰化钾';
+                
+                this.addLogEntry("实验已重置");
+                this.addLogEntry("请重新连接电路");
+            }
+            
+            clearAllEffects() {
+                this.corrosionSpots.forEach(spot => {
+                    if (spot.parentNode) spot.parentNode.removeChild(spot);
+                });
+                this.bubbles.forEach(bubble => {
+                    if (bubble.parentNode) bubble.parentNode.removeChild(bubble);
+                });
+                this.clearConnections();
+                this.clearChemicalReagents();
+                
+                this.corrosionSpots = [];
+                this.bubbles = [];
+            }
+            
+            addLogEntry(message) {
+                const now = new Date();
+                const timeString = now.getHours().toString().padStart(2, '0') + ':' + 
+                                 now.getMinutes().toString().padStart(2, '0') + ':' + 
+                                 now.getSeconds().toString().padStart(2, '0');
+                
+                const logEntry = document.createElement('div');
+                logEntry.className = 'log-entry';
+                logEntry.innerHTML = `<span class="log-time">[${timeString}]</span> ${message}`;
+                
+                const logContainer = document.getElementById('logContainer');
+                logContainer.appendChild(logEntry);
+                logContainer.scrollTop = logContainer.scrollHeight;
+                
+                this.logEntries.push({time: timeString, message: message});
+                
+                if (this.logEntries.length > 15) {
+                    this.logEntries.shift();
+                    if (logContainer.firstChild) {
+                        logContainer.removeChild(logContainer.firstChild);
+                    }
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            new ChemistryLabSimulation();
+        });
+    </script>
 </body>
 </html>
